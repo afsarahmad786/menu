@@ -1,45 +1,15 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Menu Management</title>
-  </head>
-  <body>
-    <h1>Menu Management</h1>
-
-    <form action="/menu-management" method="POST">
-      <label for="menuName">Menu Name:</label>
-      <input type="text" id="menuName" name="menuName" required />
-
-      <label for="menuDescription">Description:</label>
-      <textarea id="menuDescription" name="menuDescription" required></textarea>
-
-      <button type="submit">Create Menu</button>
-    </form>
-
-    <h2>Created Menus</h2>
-    <% if (menus.length > 0) { %>
-    <ul>
-      <% menus.forEach(menu => { %>
-      <li>
-        <strong>Name:</strong> <%= menu.name %> <br />
-        <strong>Description:</strong> <%= menu.description %>
-      </li>
-      <% }); %>
-    </ul>
-    <% } else { %>
-    <p>No menus available. Create the first menu above.</p>
-    <% } %>
-  </body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Menu Management</title>
+    <!-- Bootstrap CSS via CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <style>
       .menu-item {
         margin: 10px 0;
@@ -78,76 +48,125 @@
     </script>
   </head>
   <body>
-    <h1>Menu Management</h1>
+    <div class="container">
+      <h1 class="mt-5">Menu Management</h1>
 
-    <form action="/menu-management" method="POST">
-      <label for="menuName">Menu Name:</label>
-      <input type="text" id="menuName" name="menuName" required />
-
-      <label for="menuDescription">Description:</label>
-      <textarea id="menuDescription" name="menuDescription" required></textarea>
-
-      <button type="submit">Create Menu</button>
-    </form>
-
-    <h2>Created Menus</h2>
-    <% if (menus.length > 0) { %>
-    <ul>
-      <% menus.forEach(menu => { %>
-      <li class="menu-item">
-        <strong>Name:</strong> <%= menu.name %> <br />
-        <strong>Description:</strong> <%= menu.description %> <br />
-
-        <!-- Submenu toggle (mockup) -->
-        <span class="submenu-toggle" onclick="toggleSubmenu('<%= menu._id %>')"
-          >Show/Hide Submenu</span
-        >
-        <div id="submenu-<%= menu._id %>" class="submenu-content">
-          <!-- Placeholder for submenus -->
-          <p>No submenus available.</p>
+      <form action="/menu-management" method="POST">
+        <div class="mb-3">
+          <label for="menuName" class="form-label">Menu Name:</label>
+          <input
+            type="text"
+            id="menuName"
+            name="menuName"
+            class="form-control"
+            required
+          />
         </div>
 
-        <!-- Update and delete buttons -->
-        <button onclick="showUpdateForm('<%= menu._id %>')">Update</button>
-        <form
-          action="/menu-management/delete/<%= menu._id %>"
-          method="POST"
-          style="display: inline"
-        >
-          <button type="submit">Delete</button>
-        </form>
+        <div class="mb-3">
+          <label for="menuDescription" class="form-label">Description:</label>
+          <textarea
+            id="menuDescription"
+            name="menuDescription"
+            class="form-control"
+            rows="3"
+            required
+          ></textarea>
+        </div>
 
-        <!-- Update form (initially hidden) -->
-        <div id="update-form-<%= menu._id %>" class="update-form">
-          <form action="/menu-management/update/<%= menu._id %>" method="POST">
-            <label for="updateName-<%= menu._id %>">New Name:</label>
-            <input
-              type="text"
-              id="updateName-<%= menu._id %>"
-              name="menuName"
-              required
-            />
+        <button type="submit" class="btn btn-primary">Create Menu</button>
+      </form>
 
-            <label for="updateDescription-<%= menu._id %>"
-              >New Description:</label
-            >
-            <textarea
-              id="updateDescription-<%= menu._id %>"
-              name="menuDescription"
-              required
-            ></textarea>
+      <h2 class="mt-5">Created Menus</h2>
+      <% if (menus.length > 0) { %>
+      <ul class="list-group">
+        <% menus.forEach(menu => { %>
+        <li class="list-group-item menu-item">
+          <strong>Name:</strong> <%= menu.name %> <br />
+          <strong>Description:</strong> <%= menu.description %> <br />
 
-            <button type="submit">Save</button>
-            <button type="button" onclick="hideUpdateForm('<%= menu._id %>')">
-              Cancel
-            </button>
+          <!-- Submenu toggle (mockup) -->
+          <span
+            class="submenu-toggle"
+            onclick="toggleSubmenu('<%= menu._id %>')"
+            >Show/Hide Submenu</span
+          >
+          <div id="submenu-<%= menu._id %>" class="submenu-content">
+            <!-- Placeholder for submenus -->
+            <p>No submenus available.</p>
+          </div>
+
+          <!-- Update and delete buttons -->
+          <button
+            onclick="showUpdateForm('<%= menu._id %>')"
+            class="btn btn-sm btn-warning"
+          >
+            Update
+          </button>
+          <form
+            action="/menu-management/delete/<%= menu._id %>"
+            method="POST"
+            style="display: inline"
+          >
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
           </form>
-        </div>
-      </li>
-      <% }); %>
-    </ul>
-    <% } else { %>
-    <p>No menus available. Create the first menu above.</p>
-    <% } %>
+
+          <!-- Update form (initially hidden) -->
+          <div id="update-form-<%= menu._id %>" class="update-form">
+            <form
+              action="/menu-management/update/<%= menu._id %>"
+              method="POST"
+            >
+              <div class="mb-3">
+                <label for="updateName-<%= menu._id %>" class="form-label"
+                  >New Name:</label
+                >
+                <input
+                  type="text"
+                  id="updateName-<%= menu._id %>"
+                  name="menuName"
+                  class="form-control"
+                  value="<%= menu.name %>"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label
+                  for="updateDescription-<%= menu._id %>"
+                  class="form-label"
+                  >New Description:</label
+                >
+                <textarea
+                  id="updateDescription-<%= menu._id %>"
+                  name="menuDescription"
+                  class="form-control"
+                  rows="3"
+                  required
+                >
+<%= menu.description %></textarea
+                >
+              </div>
+
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button
+                type="button"
+                onclick="hideUpdateForm('<%= menu._id %>')"
+                class="btn btn-secondary"
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </li>
+        <% }); %>
+      </ul>
+      <% } else { %>
+      <p>No menus available. Create the first menu above.</p>
+      <% } %>
+    </div>
+
+    <!-- Bootstrap JavaScript Bundle (Bootstrap JS + Popper.js) via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
