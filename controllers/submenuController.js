@@ -42,31 +42,51 @@ exports.getSubmenusByMenuId = async (req, res) => {
 
 // Update a submenu by id
 exports.updateSubmenusByMenuId = async (req, res) => {
-  const { id } = req.params;
+  const { submenuId } = req.params;
   const { name, description } = req.body;
 
   try {
     const updatedSubmenu = await Submenu.findByIdAndUpdate(
-      id,
+      submenuId,
       { name, description },
-      { new: true }
+      { new: true } // Return the updated document
     );
-    res.status(200).json(updatedSubmenu);
+    if (!updatedSubmenu) {
+      return res.status(404).json({ error: "Submenu not found" });
+    }
+    res.json(updatedSubmenu);
   } catch (error) {
     console.error("Error updating submenu:", error);
     res.status(500).json({ error: "Failed to update submenu" });
   }
 };
-
 // Delete a submenu by id
 exports.deleteSubmenusByMenuId = async (req, res) => {
-  const { id } = req.params;
+  const { submenuId } = req.params;
 
   try {
-    await Submenu.findByIdAndDelete(id);
-    res.status(200).json({ message: "Submenu deleted successfully" });
+    const deletedSubmenu = await Submenu.findByIdAndDelete(submenuId);
+    if (!deletedSubmenu) {
+      return res.status(404).json({ error: "Submenu not found" });
+    }
+    res.redirect("/menu-management"); // Redirect to menu management page after deletion
   } catch (error) {
     console.error("Error deleting submenu:", error);
     res.status(500).json({ error: "Failed to delete submenu" });
+  }
+};
+
+exports.detailSubMenu = async (req, res) => {
+  const { submenuId } = req.params;
+
+  try {
+    const submenu = await Submenu.findById(submenuId);
+    if (!submenu) {
+      return res.status(404).json({ error: "Submenu not found" });
+    }
+    res.json(submenu);
+  } catch (error) {
+    console.error("Error fetching submenu:", error);
+    res.status(500).json({ error: "Failed to fetch submenu" });
   }
 };

@@ -102,7 +102,6 @@
             >
             <div id="submenu-<%= menu._id %>" class="submenu-content">
               <!-- Placeholder for submenus -->
-              <p>No submenus available.</p>
             </div>
           </form>
 
@@ -273,6 +272,8 @@
 
       // JavaScript to toggle submenu visibility and fetch submenus
 
+      // JavaScript for handling submenu update and delete
+
       async function toggleSubmenu(menuId) {
         var submenu = document.getElementById("submenu-" + menuId);
 
@@ -304,14 +305,76 @@
         submenuContent.innerHTML = ""; // Clear existing content
 
         if (submenus.length > 0) {
+          var ul = document.createElement("ul");
+          ul.classList.add("list-group");
           submenus.forEach((submenu) => {
-            var submenuItem = document.createElement("div");
-            submenuItem.textContent =
-              submenu.name + " - " + submenu.description;
-            submenuContent.appendChild(submenuItem);
+            var li = document.createElement("li");
+            li.classList.add("list-group-item");
+
+            var nameDiv = document.createElement("div");
+            nameDiv.innerHTML = `<strong>Name:</strong> ${submenu.name}`;
+            li.appendChild(nameDiv);
+
+            var descDiv = document.createElement("div");
+            descDiv.innerHTML = `<strong>Description:</strong> ${submenu.description}`;
+            li.appendChild(descDiv);
+
+            var updateButton = document.createElement("button");
+            updateButton.textContent = "Update";
+            updateButton.classList.add("btn", "btn-sm", "btn-warning");
+            updateButton.onclick = () => showUpdateForm(submenu._id);
+            li.appendChild(updateButton);
+
+            var deleteForm = document.createElement("form");
+            deleteForm.action = `/submenus/delete/${submenu._id}`;
+            deleteForm.method = "POST";
+            deleteForm.style.display = "inline";
+
+            var deleteButton = document.createElement("button");
+            deleteButton.type = "submit";
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add("btn", "btn-sm", "btn-danger");
+            deleteForm.appendChild(deleteButton);
+
+            li.appendChild(deleteForm);
+            ul.appendChild(li);
           });
+          submenuContent.appendChild(ul);
         } else {
           submenuContent.textContent = "No submenus available.";
+        }
+      }
+
+      async function showUpdateForm(submenuId) {
+        try {
+          const response = await fetch(`/submenus/${submenuId}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch submenu details.");
+          }
+          const submenu = await response.json();
+          console.log("Fetched submenu details:", submenu);
+          // Assuming you have a function to populate update form fields
+          populateUpdateForm(submenuId, submenu);
+        } catch (error) {
+          console.error("Error fetching submenu details:", error);
+          alert("Failed to fetch submenu details. Please try again.");
+        }
+      }
+
+      function populateUpdateForm(submenuId, submenu) {
+        // Example function to populate update form fields
+        var updateNameInput = document.getElementById(
+          "updateName-" + submenuId
+        );
+        var updateDescriptionInput = document.getElementById(
+          "updateDescription-" + submenuId
+        );
+
+        if (updateNameInput && updateDescriptionInput) {
+          updateNameInput.value = submenu.name;
+          updateDescriptionInput.value = submenu.description;
+        } else {
+          console.error("Update form fields not found.");
         }
       }
 
