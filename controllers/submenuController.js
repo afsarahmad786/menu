@@ -5,6 +5,7 @@ const Submenu = require("../models/submenuModel");
 exports.createSubmenu = async (req, res) => {
   const { menuId } = req.params;
   const { name, description } = req.body;
+  console.log("Submeny", req.body);
 
   try {
     const newSubmenu = new Submenu({
