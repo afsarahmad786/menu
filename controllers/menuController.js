@@ -3,6 +3,8 @@ const Menu = require("../models/menuModel");
 
 // Display menu management page
 exports.getMenuManagementPage = async (req, res) => {
+  console.log("GetMenu");
+
   try {
     const menus = await Menu.find();
     res.render("menu-management", { menus });
@@ -18,6 +20,7 @@ exports.createMenu = async (req, res) => {
     name: req.body.menuName,
     description: req.body.menuDescription,
   };
+  console.log("CreatteMenu");
 
   try {
     const newMenu = new Menu(menuData);
@@ -36,6 +39,7 @@ exports.updateMenu = async (req, res) => {
     name: req.body.menuName,
     description: req.body.menuDescription,
   };
+  console.log("UpdateMenu");
 
   try {
     await Menu.findByIdAndUpdate(id, updatedData);
@@ -49,6 +53,7 @@ exports.updateMenu = async (req, res) => {
 // Handle menu deletion
 exports.deleteMenu = async (req, res) => {
   const { id } = req.params;
+  console.log("DeleteMenu");
 
   try {
     await Menu.findByIdAndDelete(id);

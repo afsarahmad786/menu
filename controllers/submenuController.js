@@ -5,8 +5,7 @@ const Submenu = require("../models/Submenu");
 exports.createSubmenu = async (req, res) => {
   const { menuId } = req.params;
   const { name, description } = req.body;
-  console.log("Submeny", req.body);
-  console.log("Submeny", menuId);
+  console.log("createSubMneu");
 
   try {
     // Assuming menuId is a valid ObjectId and exists in the Menu collection
@@ -17,7 +16,7 @@ exports.createSubmenu = async (req, res) => {
     });
 
     const savedSubmenu = await newSubmenu.save();
-    res.status(201).json(savedSubmenu); // Return the saved submenu as JSON
+    res.redirect("/menu-management"); // Redirect to menu management page after deletion
   } catch (error) {
     console.error("Error adding submenu:", error);
     res.status(500).json({ error: "Failed to add submenu" });
@@ -28,6 +27,7 @@ exports.createSubmenu = async (req, res) => {
 exports.getSubmenusByMenuId = async (req, res) => {
   const { menuId } = req.params;
   console.log(menuId);
+  console.log("getSubMenu");
 
   try {
     const submenus = await Submenu.find({ menu: menuId });
@@ -44,6 +44,7 @@ exports.getSubmenusByMenuId = async (req, res) => {
 exports.updateSubmenusByMenuId = async (req, res) => {
   const { submenuId } = req.params;
   const { name, description } = req.body;
+  console.log("updateSubMenu");
 
   try {
     const updatedSubmenu = await Submenu.findByIdAndUpdate(
@@ -63,6 +64,7 @@ exports.updateSubmenusByMenuId = async (req, res) => {
 // Delete a submenu by id
 exports.deleteSubmenusByMenuId = async (req, res) => {
   const { submenuId } = req.params;
+  console.log("deleteSubMenu");
 
   try {
     const deletedSubmenu = await Submenu.findByIdAndDelete(submenuId);
@@ -78,13 +80,16 @@ exports.deleteSubmenusByMenuId = async (req, res) => {
 
 exports.detailSubMenu = async (req, res) => {
   const { submenuId } = req.params;
+  console.log("detailSubMenu");
 
   try {
     const submenu = await Submenu.findById(submenuId);
+    console.log("submenu item", submenu);
     if (!submenu) {
       return res.status(404).json({ error: "Submenu not found" });
     }
-    res.json(submenu);
+
+    return res.json(submenu);
   } catch (error) {
     console.error("Error fetching submenu:", error);
     res.status(500).json({ error: "Failed to fetch submenu" });

@@ -13,6 +13,6 @@ router.post("/", menuController.createMenu);
 router.post("/update/:id", menuController.updateMenu);
 
 // Route to handle deleting a menu
-router.post("/delete/:id", menuController.deleteMenu);
+router.post("/menu/delete/:id", menuController.deleteMenu);
 
 module.exports = router;

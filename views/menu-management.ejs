@@ -88,23 +88,21 @@
             Update
           </button>
           <form
-            action="/menu-management/delete/<%= menu._id %>"
+            action="/menu-management/menu/delete/<%= menu._id %>"
             method="POST"
             style="display: inline"
           >
             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-
-            <!-- Submenu toggle (mockup) -->
-            <span
-              class="submenu-toggle"
-              onclick="toggleSubmenu('<%= menu._id %>')"
-              >Show/Hide Submenu</span
-            >
-            <div id="submenu-<%= menu._id %>" class="submenu-content">
-              <!-- Placeholder for submenus -->
-            </div>
           </form>
-
+          <!-- Submenu toggle (mockup) -->
+          <span
+            class="submenu-toggle"
+            onclick="toggleSubmenu('<%= menu._id %>')"
+            >Show/Hide Submenu</span
+          >
+          <div id="submenu-<%= menu._id %>" class="submenu-content">
+            <!-- Placeholder for submenus -->
+          </div>
           <!-- Update form (initially hidden) -->
           <div id="update-form-<%= menu._id %>" class="update-form">
             <form
@@ -322,7 +320,8 @@
             var updateButton = document.createElement("button");
             updateButton.textContent = "Update";
             updateButton.classList.add("btn", "btn-sm", "btn-warning");
-            updateButton.onclick = () => showUpdateForm(submenu._id);
+            console.log(submenu._id);
+            updateButton.onclick = () => showSubmenuUpdateForm(submenu._id); // Use new function name
             li.appendChild(updateButton);
 
             var deleteForm = document.createElement("form");
@@ -342,22 +341,6 @@
           submenuContent.appendChild(ul);
         } else {
           submenuContent.textContent = "No submenus available.";
-        }
-      }
-
-      async function showUpdateForm(submenuId) {
-        try {
-          const response = await fetch(`/submenus/${submenuId}`);
-          if (!response.ok) {
-            throw new Error("Failed to fetch submenu details.");
-          }
-          const submenu = await response.json();
-          console.log("Fetched submenu details:", submenu);
-          // Assuming you have a function to populate update form fields
-          populateUpdateForm(submenuId, submenu);
-        } catch (error) {
-          console.error("Error fetching submenu details:", error);
-          alert("Failed to fetch submenu details. Please try again.");
         }
       }
 
@@ -384,6 +367,49 @@
       }
 
       function hideUpdateForm(menuId) {
+        var form = document.getElementById("update-form-" + menuId);
+        form.style.display = "none";
+      }
+      async function showSubmenuUpdateForm(submenuId) {
+        console.log(submenuId);
+        try {
+          const response = await fetch(`/submenus/detail/${submenuId}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch submenu details.");
+          }
+          const submenu = await response.json();
+          console.log("Fetched submenu details:", submenu);
+          // Assuming you have a function to populate update form fields
+          populateSubmenuUpdateForm(submenuId, submenu);
+        } catch (error) {
+          console.error("Error fetching submenu details:", error);
+          alert("Failed to fetch submenu details. Please try again.");
+        }
+      }
+
+      function populateSubmenuUpdateForm(submenuId, submenu) {
+        // Example function to populate update form fields
+        var updateNameInput = document.getElementById(
+          "updateSubmenuName-" + submenuId
+        );
+        var updateDescriptionInput = document.getElementById(
+          "updateSubmenuDescription-" + submenuId
+        );
+
+        if (updateNameInput && updateDescriptionInput) {
+          updateNameInput.value = submenu.name;
+          updateDescriptionInput.value = submenu.description;
+        } else {
+          console.error("Update form fields not found.");
+        }
+      }
+
+      function showMenuUpdateForm(menuId) {
+        var form = document.getElementById("update-form-" + menuId);
+        form.style.display = "block";
+      }
+
+      function hideMenuUpdateForm(menuId) {
         var form = document.getElementById("update-form-" + menuId);
         form.style.display = "none";
       }
