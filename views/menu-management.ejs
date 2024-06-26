@@ -80,17 +80,6 @@
           </div>
           <strong>Description:</strong> <%= menu.description %> <br />
 
-          <!-- Submenu toggle (mockup) -->
-          <span
-            class="submenu-toggle"
-            onclick="toggleSubmenu('<%= menu._id %>')"
-            >Show/Hide Submenu</span
-          >
-          <div id="submenu-<%= menu._id %>" class="submenu-content">
-            <!-- Placeholder for submenus -->
-            <p>No submenus available.</p>
-          </div>
-
           <!-- Update and delete buttons -->
           <button
             onclick="showUpdateForm('<%= menu._id %>')"
@@ -104,6 +93,17 @@
             style="display: inline"
           >
             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+
+            <!-- Submenu toggle (mockup) -->
+            <span
+              class="submenu-toggle"
+              onclick="toggleSubmenu('<%= menu._id %>')"
+              >Show/Hide Submenu</span
+            >
+            <div id="submenu-<%= menu._id %>" class="submenu-content">
+              <!-- Placeholder for submenus -->
+              <p>No submenus available.</p>
+            </div>
           </form>
 
           <!-- Update form (initially hidden) -->
@@ -271,12 +271,47 @@
         }
       }
 
-      function toggleSubmenu(menuId) {
+      // JavaScript to toggle submenu visibility and fetch submenus
+
+      async function toggleSubmenu(menuId) {
         var submenu = document.getElementById("submenu-" + menuId);
-        if (submenu.style.display === "none") {
+
+        // Check if submenu is hidden or not visible
+        if (submenu.style.display === "" || submenu.style.display === "none") {
+          await fetchSubmenus(menuId); // Fetch submenus asynchronously
           submenu.style.display = "block";
         } else {
           submenu.style.display = "none";
+        }
+      }
+
+      async function fetchSubmenus(menuId) {
+        try {
+          const response = await fetch(`/submenus/${menuId}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch submenus.");
+          }
+          const submenus = await response.json();
+          console.log("Fetched submenus:", submenus);
+          updateSubmenuUI(menuId, submenus); // Update UI with fetched submenus
+        } catch (error) {
+          console.error("Error fetching submenus:", error);
+        }
+      }
+
+      function updateSubmenuUI(menuId, submenus) {
+        var submenuContent = document.getElementById("submenu-" + menuId);
+        submenuContent.innerHTML = ""; // Clear existing content
+
+        if (submenus.length > 0) {
+          submenus.forEach((submenu) => {
+            var submenuItem = document.createElement("div");
+            submenuItem.textContent =
+              submenu.name + " - " + submenu.description;
+            submenuContent.appendChild(submenuItem);
+          });
+        } else {
+          submenuContent.textContent = "No submenus available.";
         }
       }
 
