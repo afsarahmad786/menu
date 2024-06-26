@@ -1,0 +1,153 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu Management</title>
+  </head>
+  <body>
+    <h1>Menu Management</h1>
+
+    <form action="/menu-management" method="POST">
+      <label for="menuName">Menu Name:</label>
+      <input type="text" id="menuName" name="menuName" required />
+
+      <label for="menuDescription">Description:</label>
+      <textarea id="menuDescription" name="menuDescription" required></textarea>
+
+      <button type="submit">Create Menu</button>
+    </form>
+
+    <h2>Created Menus</h2>
+    <% if (menus.length > 0) { %>
+    <ul>
+      <% menus.forEach(menu => { %>
+      <li>
+        <strong>Name:</strong> <%= menu.name %> <br />
+        <strong>Description:</strong> <%= menu.description %>
+      </li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>No menus available. Create the first menu above.</p>
+    <% } %>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu Management</title>
+    <style>
+      .menu-item {
+        margin: 10px 0;
+      }
+      .submenu-toggle {
+        cursor: pointer;
+        color: blue;
+      }
+      .submenu-content {
+        display: none;
+        margin-left: 20px;
+      }
+      .update-form {
+        display: none;
+      }
+    </style>
+    <script>
+      function toggleSubmenu(menuId) {
+        var submenu = document.getElementById("submenu-" + menuId);
+        if (submenu.style.display === "none") {
+          submenu.style.display = "block";
+        } else {
+          submenu.style.display = "none";
+        }
+      }
+
+      function showUpdateForm(menuId) {
+        var form = document.getElementById("update-form-" + menuId);
+        form.style.display = "block";
+      }
+
+      function hideUpdateForm(menuId) {
+        var form = document.getElementById("update-form-" + menuId);
+        form.style.display = "none";
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Menu Management</h1>
+
+    <form action="/menu-management" method="POST">
+      <label for="menuName">Menu Name:</label>
+      <input type="text" id="menuName" name="menuName" required />
+
+      <label for="menuDescription">Description:</label>
+      <textarea id="menuDescription" name="menuDescription" required></textarea>
+
+      <button type="submit">Create Menu</button>
+    </form>
+
+    <h2>Created Menus</h2>
+    <% if (menus.length > 0) { %>
+    <ul>
+      <% menus.forEach(menu => { %>
+      <li class="menu-item">
+        <strong>Name:</strong> <%= menu.name %> <br />
+        <strong>Description:</strong> <%= menu.description %> <br />
+
+        <!-- Submenu toggle (mockup) -->
+        <span class="submenu-toggle" onclick="toggleSubmenu('<%= menu._id %>')"
+          >Show/Hide Submenu</span
+        >
+        <div id="submenu-<%= menu._id %>" class="submenu-content">
+          <!-- Placeholder for submenus -->
+          <p>No submenus available.</p>
+        </div>
+
+        <!-- Update and delete buttons -->
+        <button onclick="showUpdateForm('<%= menu._id %>')">Update</button>
+        <form
+          action="/menu-management/delete/<%= menu._id %>"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit">Delete</button>
+        </form>
+
+        <!-- Update form (initially hidden) -->
+        <div id="update-form-<%= menu._id %>" class="update-form">
+          <form action="/menu-management/update/<%= menu._id %>" method="POST">
+            <label for="updateName-<%= menu._id %>">New Name:</label>
+            <input
+              type="text"
+              id="updateName-<%= menu._id %>"
+              name="menuName"
+              required
+            />
+
+            <label for="updateDescription-<%= menu._id %>"
+              >New Description:</label
+            >
+            <textarea
+              id="updateDescription-<%= menu._id %>"
+              name="menuDescription"
+              required
+            ></textarea>
+
+            <button type="submit">Save</button>
+            <button type="button" onclick="hideUpdateForm('<%= menu._id %>')">
+              Cancel
+            </button>
+          </form>
+        </div>
+      </li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>No menus available. Create the first menu above.</p>
+    <% } %>
+  </body>
+</html>
